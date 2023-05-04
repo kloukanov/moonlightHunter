@@ -12,19 +12,30 @@ public class Entity : MonoBehaviour, IHasProgress
     private string _name;
     private float _maxHealth;
     private float _health;
-    private float _attackStrenght;
+    private float _attackStrength;
+    private List<CollectableObjectSO> _collectableObjectSOList;
 
     private void Awake()
     {
         _name = _entitySO.objectName;
         _maxHealth = _entitySO.maxHealth;
         _health = _entitySO.health;
-        _attackStrenght = _entitySO.attackStrenght;
+        _attackStrength = _entitySO.attackStrength;
+        _collectableObjectSOList = _entitySO.collectableObjectSOList;
     }
 
     private void DestroySelf()
     {
         Destroy(gameObject);
+    }
+
+    private void SpawnLoot()
+    {
+        foreach(CollectableObjectSO collectableObjectSO in _collectableObjectSOList)
+        {
+            Debug.Log("dropping loot: " + _collectableObjectSOList[0].objectName);
+            CollectableObject.SpawnCollectableObject(collectableObjectSO, this.transform);
+        }
     }
 
     public string GetName()
@@ -46,7 +57,7 @@ public class Entity : MonoBehaviour, IHasProgress
 
     public void DealDamage(Entity other)
     {
-        other.DeductHealth(_attackStrenght);
+        other.DeductHealth(_attackStrength);
     }
 
     public void DeductHealth(float deductHealthValue)
@@ -62,6 +73,7 @@ public class Entity : MonoBehaviour, IHasProgress
 
         if(_health <= 0)
         {
+            SpawnLoot();
             DestroySelf();
         }
     }

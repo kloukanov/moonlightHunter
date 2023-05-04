@@ -8,5 +8,6 @@ public class EntitySO : ScriptableObject
     public string objectName;
     public float maxHealth;
     public float health;
-    public float attackStrenght;
+    public float attackStrength;
+    public List<CollectableObjectSO> collectableObjectSOList;
 }

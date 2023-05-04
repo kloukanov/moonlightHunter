@@ -12,6 +12,9 @@ public class Player : MonoBehaviour
 
     private float _turnSmoothTime = 0.1f;
     private float _turnSmoothVelocity;
+    private float _playerCastRadius = 1f;
+    private int _nonPlayerLayerMask = 7;
+
     private bool _isWalking;
     private bool _isSwordAttacking = false;
     private Vector3 _lastInteractDir;
@@ -26,7 +29,13 @@ public class Player : MonoBehaviour
     private void Start()
     {
         _gameInput.OnSwordAttackAction += GameInput_OnSwordAttackAction;
+        _gameInput.OnInteractAction += GameInput_OnInteractAction;
         _entity = GetComponent<Entity>();
+    }
+
+    private void GameInput_OnInteractAction(object sender, EventArgs e)
+    {
+        //empty for now
     }
 
     private void GameInput_OnSwordAttackAction(object sender, System.EventArgs e)
@@ -41,6 +50,8 @@ public class Player : MonoBehaviour
     {
         if(!_isSwordAttacking)
             HandleMovement();
+
+        HandleCollision(); // stop it once we hit at least 1 object
     }
 
     private void HandleMovement()
@@ -99,6 +110,47 @@ public class Player : MonoBehaviour
         float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _turnSmoothVelocity, _turnSmoothTime);
         transform.rotation = Quaternion.Euler(0f, angle, 0f);
     }
+
+    private void HandleCollision()
+    {
+        Collider[] hitColliders = GetCollidingObjectsWithPlayer();
+        if (hitColliders != null)
+        {
+            foreach (Collider hitCollider in hitColliders)
+            {
+                if (hitCollider.TryGetComponent(out Entity entity))
+                {
+                    //Debug.Log("we hit an entity with name =" + entity.GetName());
+                }
+                else if (hitCollider.TryGetComponent(out CollectableObject collectableObject))
+                {
+                    //Debug.Log("we hit a collectableObject with name =" + collectableObject.GetCollectableObjectSO().objectName);
+                    if(collectableObject.GetCollectableObjectSO().objectName == "Meat")
+                    {
+                        GameManager.Instance.AddFood();
+                        collectableObject.DestorySelf();
+                    }else if (collectableObject.GetCollectableObjectSO().objectName == "Bone")
+                    {
+                        GameManager.Instance.AddBones();
+                        collectableObject.DestorySelf();
+                    }
+                }
+            }
+        }
+    }
+    private Collider[] GetCollidingObjectsWithPlayer()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position + new Vector3(0, 1, 0), _playerCastRadius, _nonPlayerLayerMask);
+
+        return hitColliders;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(transform.position + new Vector3(0, 1, 0), _playerCastRadius);
+    }
+
 
     public bool IsWalking()
     {

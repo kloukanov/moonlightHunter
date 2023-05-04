@@ -10,6 +10,7 @@ public class GameInput : MonoBehaviour
     private PlayerInputActions _playerInputActions;
 
     public event EventHandler OnSwordAttackAction;
+    public event EventHandler OnInteractAction;
 
     private void Awake()
     {
@@ -18,6 +19,12 @@ public class GameInput : MonoBehaviour
         _playerInputActions = new PlayerInputActions();
         _playerInputActions.Player.Enable();
         _playerInputActions.Player.SwordAttack.performed += SwordAttack_performed;
+        _playerInputActions.Player.Interact.performed += Interact_performed;
+    }
+
+    private void Interact_performed(InputAction.CallbackContext obj)
+    {
+        OnInteractAction?.Invoke(this, EventArgs.Empty);
     }
 
     private void SwordAttack_performed(InputAction.CallbackContext obj)
