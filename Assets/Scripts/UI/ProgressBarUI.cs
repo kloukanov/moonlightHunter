@@ -7,6 +7,7 @@ public class ProgressBarUI : MonoBehaviour
 {
     [SerializeField] private GameObject hasProgressGameObject;
     [SerializeField] private Image barImage;
+    [SerializeField] private float _fillAmount;
     private IHasProgress hasProgress;
 
     private void Start()
@@ -17,7 +18,7 @@ public class ProgressBarUI : MonoBehaviour
             Debug.LogError("Game Object " + hasProgressGameObject + "does not have a component that implements IHasProgress");
         }
         hasProgress.OnProgressChanged += HasProgress_OnProgressChanged;
-        barImage.fillAmount = 100f;
+        barImage.fillAmount = _fillAmount;
         //Hide();
     }
 

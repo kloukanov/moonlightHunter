@@ -10,12 +10,15 @@ public class GameManager : MonoBehaviour
 
     public event EventHandler OnFoodAdded;
     public event EventHandler OnBonesAdded;
+    public event EventHandler OnTimerFinished;
+
+    private bool _isWerewolf = false; 
 
     private static int _foodCollected = 0;
     private static int _bonesCollected = 0;
 
     private float _gamePlayingTimer;
-    private float _gamePlayingTimerMax = 60f;
+    private float _gamePlayingTimerMax = 10f;
 
 
     private void Awake()
@@ -27,6 +30,12 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         _gamePlayingTimer -= Time.deltaTime;
+        if(_isWerewolf == false && _gamePlayingTimer <= 0)
+        {
+            // turn into werewolf
+            _isWerewolf = true;
+            OnTimerFinished?.Invoke(this, EventArgs.Empty);
+        }
     }
 
 

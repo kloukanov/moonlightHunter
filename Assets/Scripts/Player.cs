@@ -8,18 +8,24 @@ public class Player : MonoBehaviour
     public static Player Instance { get; private set; }
 
     [SerializeField] private GameInput _gameInput;
-    [SerializeField] private float _speed = 7f;
+    [SerializeField] private float _movementSpeed = 7f;
+    [SerializeField] private Transform _attackPointTransform;
+    [SerializeField] private GameObject _humanPrefab;
+    [SerializeField] private GameObject _werewolfPrefab;
+
 
     private float _turnSmoothTime = 0.1f;
     private float _turnSmoothVelocity;
-    private float _playerCastRadius = 1f;
+    private float _lootPlayerCastRadius = 1f;
+    private float _attackPlayerCastRadius = 1f;
     private int _nonPlayerLayerMask = 7;
 
     private bool _isWalking;
     private bool _isSwordAttacking = false;
-    private Vector3 _lastInteractDir;
+    private Vector3 _lootCollisionSphereOffset = new(0, 1, 0);
 
     private Entity _entity;
+
 
     private void Awake()
     {
@@ -31,6 +37,12 @@ public class Player : MonoBehaviour
         _gameInput.OnSwordAttackAction += GameInput_OnSwordAttackAction;
         _gameInput.OnInteractAction += GameInput_OnInteractAction;
         _entity = GetComponent<Entity>();
+        GameManager.Instance.OnTimerFinished += GameManager_OnTimerFinished;
+    }
+
+    private void GameManager_OnTimerFinished(object sender, EventArgs e)
+    {
+        TurnIntoWerewolf();
     }
 
     private void GameInput_OnInteractAction(object sender, EventArgs e)
@@ -51,7 +63,7 @@ public class Player : MonoBehaviour
         if(!_isSwordAttacking)
             HandleMovement();
 
-        HandleCollision(); // stop it once we hit at least 1 object
+        HandleCollision(_lootCollisionSphereOffset, _lootPlayerCastRadius); // stop it once we hit at least 1 object
     }
 
     private void HandleMovement()
@@ -66,41 +78,26 @@ public class Player : MonoBehaviour
 
         Vector3 direction = new Vector3(inputVector.x, 0, inputVector.y).normalized;
         LookAt(direction);
-        transform.Translate(Vector3.forward * _speed * Time.deltaTime);
+        transform.Translate(Vector3.forward * _movementSpeed * Time.deltaTime);
         _isWalking = true;
         
     }
 
     public void PerformAttack()
     {
-        Vector2 inputVector = _gameInput.GetMovementVectorNormalized();
+        //Debug.DrawRay(new Vector3(transform.position.x, 3f, transform.position.z), transform.forward, Color.green, 1);
 
-        Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
-
-        if (moveDir != Vector3.zero)
+        Collider[] hitColliders = GetCollidingObjectsWithTransform(_attackPointTransform, Vector3.zero, _attackPlayerCastRadius);
+        if (hitColliders != null)
         {
-            _lastInteractDir = moveDir;
-        }
-
-        float interactDistance = 2f;
-
-        Debug.DrawRay(new Vector3(transform.position.x, 3f, transform.position.z), transform.forward, Color.green, 1);
-
-        if (Physics.Raycast(new Vector3(transform.position.x, 3f, transform.position.z), transform.forward, out RaycastHit raycastHit, interactDistance))
-        {
-            if(raycastHit.transform.TryGetComponent(out Entity entity))
+            foreach (Collider hitCollider in hitColliders)
             {
-                Debug.Log("we hit an entity with name=" + entity.GetName());
-                _entity.DealDamage(entity);
+                if (hitCollider.TryGetComponent(out Entity entity))
+                {
+                    Debug.Log("we hit an entity with name =" + entity.GetName());
+                    _entity.DealDamage(entity);
+                }
             }
-            else
-            {
-                Debug.Log("not an entity");
-            }
-        }
-        else
-        {
-            Debug.Log("didnt hit nun");
         }
     }
 
@@ -111,9 +108,9 @@ public class Player : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, angle, 0f);
     }
 
-    private void HandleCollision()
+    private void HandleCollision(Vector3 sphereOffset, float radius)
     {
-        Collider[] hitColliders = GetCollidingObjectsWithPlayer();
+        Collider[] hitColliders = GetCollidingObjectsWithTransform(this.transform, sphereOffset, radius);
         if (hitColliders != null)
         {
             foreach (Collider hitCollider in hitColliders)
@@ -121,6 +118,8 @@ public class Player : MonoBehaviour
                 if (hitCollider.TryGetComponent(out Entity entity))
                 {
                     //Debug.Log("we hit an entity with name =" + entity.GetName());
+
+                    // show entity health bar when in proximity
                 }
                 else if (hitCollider.TryGetComponent(out CollectableObject collectableObject))
                 {
@@ -138,17 +137,26 @@ public class Player : MonoBehaviour
             }
         }
     }
-    private Collider[] GetCollidingObjectsWithPlayer()
+    private Collider[] GetCollidingObjectsWithTransform(Transform transformObj, Vector3 sphereOffset, float radius)
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position + new Vector3(0, 1, 0), _playerCastRadius, _nonPlayerLayerMask);
+        Collider[] hitColliders = Physics.OverlapSphere(transformObj.position + sphereOffset, radius, _nonPlayerLayerMask);
 
         return hitColliders;
     }
 
+
+    private void TurnIntoWerewolf()
+    {
+        _humanPrefab.SetActive(false);
+        _werewolfPrefab.SetActive(true);   
+    }
+
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(transform.position + new Vector3(0, 1, 0), _playerCastRadius);
+        //Gizmos.DrawSphere(transform.position + new Vector3(0, 1, 0), _playerCastRadius);
+        Gizmos.DrawSphere(_attackPointTransform.position, _attackPlayerCastRadius);
     }
 
 

@@ -84,6 +84,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3404253114952610775, guid: 842686149a2a05f45a9d79a6ee5462a6,
         type: 3}
+      propertyPath: _fillAmount
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3404253114952610775, guid: 842686149a2a05f45a9d79a6ee5462a6,
+        type: 3}
       propertyPath: hasProgressGameObject
       value: 
       objectReference: {fileID: 9115976648475647818}
