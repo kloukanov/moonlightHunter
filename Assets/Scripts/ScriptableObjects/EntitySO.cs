@@ -9,5 +9,8 @@ public class EntitySO : ScriptableObject
     public float maxHealth;
     public float health;
     public float attackStrength;
+    public float walkSpeed;
+    public float runSpeed;
+    public bool isHostile;
     public List<CollectableObjectSO> collectableObjectSOList;
 }

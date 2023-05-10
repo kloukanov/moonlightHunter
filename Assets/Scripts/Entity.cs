@@ -13,7 +13,10 @@ public class Entity : MonoBehaviour, IHasProgress
     private float _maxHealth;
     private float _health;
     private float _attackStrength;
+    private float _walkSpeed;
+    private float _runSpeed;
     private List<CollectableObjectSO> _collectableObjectSOList;
+    private bool _isHostile;
 
     private void Awake()
     {
@@ -21,6 +24,9 @@ public class Entity : MonoBehaviour, IHasProgress
         _maxHealth = _entitySO.maxHealth;
         _health = _entitySO.health;
         _attackStrength = _entitySO.attackStrength;
+        _walkSpeed = _entitySO.walkSpeed;
+        _runSpeed = _entitySO.runSpeed;
+        _isHostile = _entitySO.isHostile;
         _collectableObjectSOList = _entitySO.collectableObjectSOList;
     }
 
@@ -41,6 +47,21 @@ public class Entity : MonoBehaviour, IHasProgress
     public string GetName()
     {
         return _name;
+    }
+
+    public bool IsHostile()
+    {
+        return _isHostile;
+    }
+
+    public float GetWalkSpeed()
+    {
+        return _walkSpeed;
+    }
+
+    public float GetRunSpeed()
+    {
+        return _runSpeed;
     }
 
     public void AddHealth(float healthValue)

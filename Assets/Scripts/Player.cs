@@ -7,7 +7,6 @@ public class Player : MonoBehaviour
 {
     public static Player Instance { get; private set; }
 
-    [SerializeField] private GameInput _gameInput;
     [SerializeField] private float _movementSpeed = 7f;
     [SerializeField] private Transform _attackPointTransform;
     [SerializeField] private GameObject _humanPrefab;
@@ -17,7 +16,7 @@ public class Player : MonoBehaviour
     private float _turnSmoothTime = 0.1f;
     private float _turnSmoothVelocity;
     private float _lootPlayerCastRadius = 1f;
-    private float _attackPlayerCastRadius = 1f;
+    private float _attackPlayerCastRadius = 2f;
     private int _nonPlayerLayerMask = 7;
 
     private bool _isWalking;
@@ -34,8 +33,8 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        _gameInput.OnSwordAttackAction += GameInput_OnSwordAttackAction;
-        _gameInput.OnInteractAction += GameInput_OnInteractAction;
+        GameInput.Instance.OnSwordAttackAction += GameInput_OnSwordAttackAction;
+        GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
         _entity = GetComponent<Entity>();
         GameManager.Instance.OnTimerFinished += GameManager_OnTimerFinished;
     }
@@ -68,7 +67,7 @@ public class Player : MonoBehaviour
 
     private void HandleMovement()
     {
-        Vector2 inputVector = _gameInput.GetMovementVectorNormalized();
+        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
 
         if (inputVector.magnitude == 0)
         {

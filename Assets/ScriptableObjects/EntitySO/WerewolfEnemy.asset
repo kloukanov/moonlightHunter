@@ -10,15 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17b4c3a81415e2641b4e250b701f3eb8, type: 3}
-  m_Name: Deer
+  m_Name: WerewolfEnemy
   m_EditorClassIdentifier: 
-  objectName: Deer
-  maxHealth: 100
-  health: 100
-  attackStrength: 5
-  walkSpeed: 1.5
+  objectName: WerewolfEnemy
+  maxHealth: 200
+  health: 200
+  attackStrength: 30
+  walkSpeed: 3.5
   runSpeed: 4
-  isHostile: 0
+  isHostile: 1
   collectableObjectSOList:
   - {fileID: 11400000, guid: 481874d42ecc2b845a29501f84189b55, type: 2}
-  - {fileID: 11400000, guid: 6767f4413daaa6947a9b9a28742f5bb4, type: 2}

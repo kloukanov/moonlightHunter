@@ -79,8 +79,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameInput: {fileID: 0}
-  _speed: 7
-  _attackPointTransform: {fileID: 0}
+  _movementSpeed: 7
+  _attackPointTransform: {fileID: 8519743371090113963}
+  _humanPrefab: {fileID: 7319150258753345045}
+  _werewolfPrefab: {fileID: 8786942908357477644}
 --- !u!1001 &7589605168044223300
 PrefabInstance:
   m_ObjectHideFlags: 0
