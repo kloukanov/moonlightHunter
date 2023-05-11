@@ -18,6 +18,7 @@ MonoBehaviour:
   attackStrength: 30
   walkSpeed: 3.5
   runSpeed: 4
+  attackSpeed: 60
   isHostile: 1
   collectableObjectSOList:
   - {fileID: 11400000, guid: 481874d42ecc2b845a29501f84189b55, type: 2}

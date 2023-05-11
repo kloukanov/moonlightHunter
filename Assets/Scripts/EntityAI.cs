@@ -22,6 +22,9 @@ public class EntityAI : MonoBehaviour
     private float _waitTime;
     private float _currentWaitTime;
     private float _fleeDistanceToPlayer = 5f;
+    private float _attackVisabilityDistanceToPlayer = 10f;
+    private float _attackDistanceToPlayer = 2f;
+
 
     private void Awake()
     {
@@ -49,7 +52,7 @@ public class EntityAI : MonoBehaviour
                 Fleeing();
                 break;
             case State.Attacking:
-
+                Attacking();
                 break;
             default:
                 Debug.LogError("state " + _state + " was unexpected");
@@ -59,7 +62,12 @@ public class EntityAI : MonoBehaviour
 
     private void Idle()
     {
-        if (ShouldFlee())
+        if ((!_entity.IsHostile()) && ShouldFlee())
+        {
+            return;
+        }
+
+        if (_entity.IsHostile() && ShouldAttack())
         {
             return;
         }
@@ -78,7 +86,12 @@ public class EntityAI : MonoBehaviour
 
     private void Patrol()
     {
-        if (ShouldFlee())
+        if ((!_entity.IsHostile()) && ShouldFlee())
+        {
+            return;
+        }
+
+        if (_entity.IsHostile() && ShouldAttack())
         {
             return;
         }
@@ -101,9 +114,38 @@ public class EntityAI : MonoBehaviour
         } 
     }
 
+    private void Attacking()
+    {
+        if (!ShouldAttack())
+        {
+            _state = State.Idle;
+            return;
+        }
+        else
+        {
+            if ((Vector3.Distance(Player.Instance.transform.position, transform.position) < _attackDistanceToPlayer))
+            {
+                if(_currentWaitTime >= (Time.time + _entity.GetAttackSpeed()))
+                {
+                    Debug.Log(_entity.name + " is attacking the player");
+                    _entity.DealDamage(Player.Instance.gameObject.GetComponent<Entity>());
+                    _currentWaitTime = Time.time;
+                }
+                else
+                {
+                    _currentWaitTime++;
+                }
+            }
+            else
+            {
+                _navMeshAgent.destination = Player.Instance.transform.position;
+            }
+        }
+    }
+
     private bool ShouldFlee()
     {
-        if ((!_entity.IsHostile()) && (Vector3.Distance(Player.Instance.transform.position, transform.position) < _fleeDistanceToPlayer))
+        if ((Vector3.Distance(Player.Instance.transform.position, transform.position) < _fleeDistanceToPlayer))
         {
             _state = State.Fleeing;
             _position = transform.position + new Vector3(Random.Range(-20f, 20f), transform.position.y, Random.Range(-20f, 20f));
@@ -111,7 +153,19 @@ public class EntityAI : MonoBehaviour
             return true;
         }
         return false;
-    } 
+    }
+
+    private bool ShouldAttack()
+    {
+        if ((Vector3.Distance(Player.Instance.transform.position, transform.position) < _attackVisabilityDistanceToPlayer))
+        {
+            _state = State.Attacking;
+            _position = Player.Instance.transform.position;
+            _navMeshAgent.speed = _entity.GetRunSpeed();
+            return true;
+        }
+        return false;
+    }
 
     private void MoveNavmeshAgent()
     {

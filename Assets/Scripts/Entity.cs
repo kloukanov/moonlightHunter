@@ -15,6 +15,7 @@ public class Entity : MonoBehaviour, IHasProgress
     private float _attackStrength;
     private float _walkSpeed;
     private float _runSpeed;
+    private float _attackSpeed;
     private List<CollectableObjectSO> _collectableObjectSOList;
     private bool _isHostile;
 
@@ -27,12 +28,21 @@ public class Entity : MonoBehaviour, IHasProgress
         _walkSpeed = _entitySO.walkSpeed;
         _runSpeed = _entitySO.runSpeed;
         _isHostile = _entitySO.isHostile;
+        _attackSpeed = _entitySO.attackSpeed;
         _collectableObjectSOList = _entitySO.collectableObjectSOList;
     }
 
     private void DestroySelf()
     {
-        Destroy(gameObject);
+        if (gameObject.Equals(Player.Instance.gameObject))
+        {
+            gameObject.SetActive(false);
+            Debug.Log("game over");
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void SpawnLoot()
@@ -62,6 +72,11 @@ public class Entity : MonoBehaviour, IHasProgress
     public float GetRunSpeed()
     {
         return _runSpeed;
+    }
+
+    public float GetAttackSpeed()
+    {
+        return _attackSpeed;
     }
 
     public void AddHealth(float healthValue)
