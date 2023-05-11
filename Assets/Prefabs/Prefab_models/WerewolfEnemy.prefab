@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6776603918791831188}
+  - component: {fileID: 6545826693582949625}
   - component: {fileID: 5166829770130607848}
   - component: {fileID: 263842041814772703}
   - component: {fileID: 1035085588988147958}
@@ -37,6 +38,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6545826693582949625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8656375112010379817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0828b56ed99d304c98bcf3c1354a30c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5166829770130607848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -321,12 +334,35 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 8ef50628f256ef9489c09948c5c2c186, type: 2}
+      objectReference: {fileID: 9100000, guid: 98f52238ddeef7446a440875e3a7afe7, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6986ef6d475de3145ad21e7239c6a8fb,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4732171426874015010}
   m_SourcePrefab: {fileID: 100100000, guid: 6986ef6d475de3145ad21e7239c6a8fb, type: 3}
+--- !u!1 &5096352232219082282 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6986ef6d475de3145ad21e7239c6a8fb,
+    type: 3}
+  m_PrefabInstance: {fileID: 5366189088332497787}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4732171426874015010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5096352232219082282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efbd416cdbb8a38458b19c27161ea1b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _werewolfEnemy: {fileID: 6545826693582949625}
 --- !u!4 &5616606618337649808 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6986ef6d475de3145ad21e7239c6a8fb,

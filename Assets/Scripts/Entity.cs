@@ -16,9 +16,12 @@ public class Entity : MonoBehaviour, IHasProgress
     private float _walkSpeed;
     private float _runSpeed;
     private float _attackSpeed;
+    private float _attackDistanceToPlayer;
     private List<CollectableObjectSO> _collectableObjectSOList;
     private bool _isHostile;
 
+    public bool IsWalking = false;
+    public bool IsSwordAttacking = false;
     private void Awake()
     {
         _name = _entitySO.objectName;
@@ -29,6 +32,7 @@ public class Entity : MonoBehaviour, IHasProgress
         _runSpeed = _entitySO.runSpeed;
         _isHostile = _entitySO.isHostile;
         _attackSpeed = _entitySO.attackSpeed;
+        _attackDistanceToPlayer = _entitySO.attackDistanceToPlayer;
         _collectableObjectSOList = _entitySO.collectableObjectSOList;
     }
 
@@ -77,6 +81,11 @@ public class Entity : MonoBehaviour, IHasProgress
     public float GetAttackSpeed()
     {
         return _attackSpeed;
+    }
+
+    public float GetAttackDistanceToPlayer()
+    {
+        return _attackDistanceToPlayer;
     }
 
     public void AddHealth(float healthValue)

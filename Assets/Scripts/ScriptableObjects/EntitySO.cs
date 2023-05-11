@@ -12,6 +12,7 @@ public class EntitySO : ScriptableObject
     public float walkSpeed;
     public float runSpeed;
     public float attackSpeed;
+    public float attackDistanceToPlayer;
     public bool isHostile;
     public List<CollectableObjectSO> collectableObjectSOList;
 }

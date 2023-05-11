@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class EntityAI : MonoBehaviour
 {
-    private enum State
+    public enum State
     {
          Idle,
          Patrolling,
@@ -23,7 +23,6 @@ public class EntityAI : MonoBehaviour
     private float _currentWaitTime;
     private float _fleeDistanceToPlayer = 5f;
     private float _attackVisabilityDistanceToPlayer = 10f;
-    private float _attackDistanceToPlayer = 2f;
 
 
     private void Awake()
@@ -62,6 +61,7 @@ public class EntityAI : MonoBehaviour
 
     private void Idle()
     {
+        _entity.IsWalking = false;
         if ((!_entity.IsHostile()) && ShouldFlee())
         {
             return;
@@ -123,21 +123,27 @@ public class EntityAI : MonoBehaviour
         }
         else
         {
-            if ((Vector3.Distance(Player.Instance.transform.position, transform.position) < _attackDistanceToPlayer))
+            if ((Vector3.Distance(Player.Instance.transform.position, transform.position) < _entity.GetAttackDistanceToPlayer()))
             {
+                
                 if(_currentWaitTime >= (Time.time + _entity.GetAttackSpeed()))
                 {
                     Debug.Log(_entity.name + " is attacking the player");
-                    _entity.DealDamage(Player.Instance.gameObject.GetComponent<Entity>());
+                    _entity.IsWalking = false;
+                    _entity.IsSwordAttacking = true;
+                    //_entity.DealDamage(Player.Instance.gameObject.GetComponent<Entity>());
                     _currentWaitTime = Time.time;
                 }
                 else
                 {
+                    _entity.IsSwordAttacking = false;
                     _currentWaitTime++;
                 }
             }
             else
             {
+                _entity.IsSwordAttacking = false;
+                _entity.IsWalking = true;
                 _navMeshAgent.destination = Player.Instance.transform.position;
             }
         }
@@ -161,6 +167,7 @@ public class EntityAI : MonoBehaviour
         {
             _state = State.Attacking;
             _position = Player.Instance.transform.position;
+            _currentWaitTime = (Time.time + _entity.GetAttackSpeed());
             _navMeshAgent.speed = _entity.GetRunSpeed();
             return true;
         }
@@ -169,7 +176,8 @@ public class EntityAI : MonoBehaviour
 
     private void MoveNavmeshAgent()
     {
-        if (transform.position.x == _position.x && transform.position.z == _position.z)
+        
+        if (transform.position.x <= (_position.x + _navMeshAgent.stoppingDistance) && transform.position.z <= (_position.z + _navMeshAgent.stoppingDistance))
         {
             _state = State.Idle;
             _currentWaitTime = Time.time;
@@ -177,9 +185,13 @@ public class EntityAI : MonoBehaviour
         }
         else
         {
+            _entity.IsWalking = true;
             _navMeshAgent.destination = _position;
         }
     }
 
-
+    public State GetState()
+    {
+        return _state;
+    }
 }

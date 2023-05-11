@@ -62,7 +62,7 @@ public class Player : MonoBehaviour
         if(!_isSwordAttacking)
             HandleMovement();
 
-        HandleCollision(_lootCollisionSphereOffset, _lootPlayerCastRadius); // stop it once we hit at least 1 object
+        HandleCollision(_lootCollisionSphereOffset, _lootPlayerCastRadius); // stop it once we hit at least 1 object?
     }
 
     private void HandleMovement()
