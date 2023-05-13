@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: WerewolfEnemy
   m_EditorClassIdentifier: 
   objectName: WerewolfEnemy
-  maxHealth: 200
-  health: 200
-  attackStrength: 30
+  maxHealth: 150
+  health: 150
+  attackStrength: 10
   walkSpeed: 3.5
   runSpeed: 4
   attackSpeed: 60

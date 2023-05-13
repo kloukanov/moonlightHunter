@@ -12,6 +12,16 @@ public class GameManager : MonoBehaviour
     public event EventHandler OnBonesAdded;
     public event EventHandler OnTimerFinished;
 
+    private enum State
+    {
+        WaitingToStart,
+        CountdownToStart,
+        GamePlaying,
+        GameOver,
+    }
+
+    private State state;
+
     private bool _isWerewolf = false; 
 
     private static int _foodCollected = 0;
@@ -30,10 +40,14 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         _gamePlayingTimer -= Time.deltaTime;
-        if(_isWerewolf == false && _gamePlayingTimer <= 0)
+
+        if(_gamePlayingTimer <= 0)
         {
             // turn into werewolf
-            _isWerewolf = true;
+            if(_isWerewolf == false)
+            {
+                _isWerewolf = true;
+            }
             OnTimerFinished?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -41,6 +55,11 @@ public class GameManager : MonoBehaviour
 
     public float GetGamePlayingTimerNormalized()
     {
+        if(_gamePlayingTimer <= 0)
+        { 
+            _gamePlayingTimer = _gamePlayingTimerMax;
+        }
+
         return 1 - _gamePlayingTimer / _gamePlayingTimerMax;
     }
 

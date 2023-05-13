@@ -41,7 +41,14 @@ public class Player : MonoBehaviour
 
     private void GameManager_OnTimerFinished(object sender, EventArgs e)
     {
-        TurnIntoWerewolf();
+        if (_humanPrefab.activeInHierarchy)
+        {
+            TurnIntoWerewolf();
+        }
+        else
+        {
+            TurnIntoHuman();
+        }
     }
 
     private void GameInput_OnInteractAction(object sender, EventArgs e)
@@ -148,6 +155,12 @@ public class Player : MonoBehaviour
     {
         _humanPrefab.SetActive(false);
         _werewolfPrefab.SetActive(true);   
+    }
+
+    private void TurnIntoHuman()
+    {
+        _werewolfPrefab.SetActive(false);
+        _humanPrefab.SetActive(true);
     }
 
 
