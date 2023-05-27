@@ -41,6 +41,7 @@ public class Entity : MonoBehaviour, IHasProgress
         if (gameObject.Equals(Player.Instance.gameObject))
         {
             gameObject.SetActive(false);
+            Player.Instance.SetPlayerToDead();
             Debug.Log("game over");
         }
         else
@@ -53,7 +54,7 @@ public class Entity : MonoBehaviour, IHasProgress
     {
         foreach(CollectableObjectSO collectableObjectSO in _collectableObjectSOList)
         {
-            Debug.Log("dropping loot: " + _collectableObjectSOList[0].objectName);
+            //Debug.Log("dropping loot: " + _collectableObjectSOList[0].objectName);
             CollectableObject.SpawnCollectableObject(collectableObjectSO, this.transform);
         }
     }
@@ -61,6 +62,11 @@ public class Entity : MonoBehaviour, IHasProgress
     public string GetName()
     {
         return _name;
+    }
+
+    public float GetHealth()
+    {
+        return _health;
     }
 
     public bool IsHostile()
@@ -107,9 +113,9 @@ public class Entity : MonoBehaviour, IHasProgress
 
     public void DeductHealth(float deductHealthValue)
     {
-        Debug.Log("dealing damage of " + deductHealthValue + " from health of " + _health);
+        //Debug.Log("dealing damage of " + deductHealthValue + " from health of " + _health);
         _health -= deductHealthValue;
-        Debug.Log("health after damage " + _health);
+        //Debug.Log("health after damage " + _health);
 
         OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
         {

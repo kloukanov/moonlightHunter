@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance { get; private set; }
 
+    public event EventHandler OnStateChanged;
     public event EventHandler OnFoodAdded;
     public event EventHandler OnBonesAdded;
     public event EventHandler OnTimerFinished;
@@ -20,12 +21,13 @@ public class GameManager : MonoBehaviour
         GameOver,
     }
 
-    private State state;
+    private State _state;
 
     private bool _isWerewolf = false; 
 
     private static int _foodCollected = 0;
     private static int _bonesCollected = 0;
+    private static int _daysSurvived = 0;
 
     private float _gamePlayingTimer;
     private float _gamePlayingTimerMax = 10f;
@@ -33,23 +35,51 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Time.timeScale = 1f;
         Instance = this;
         _gamePlayingTimer = _gamePlayingTimerMax;
+        _state = State.GamePlaying;
+    }
+
+    private void Start()
+    {
+        Player.Instance.OnPlayerDead += Player_OnPlayerDead;
+    }
+
+    private void Player_OnPlayerDead(object sender, EventArgs e)
+    {
+        _state = State.GameOver;
+        OnStateChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void Update()
     {
-        _gamePlayingTimer -= Time.deltaTime;
-
-        if(_gamePlayingTimer <= 0)
+        switch (_state)
         {
-            // turn into werewolf
-            if(_isWerewolf == false)
-            {
-                _isWerewolf = true;
-            }
-            OnTimerFinished?.Invoke(this, EventArgs.Empty);
+            case State.GamePlaying:
+                _gamePlayingTimer -= Time.deltaTime;
+
+                if (_gamePlayingTimer <= 0)
+                {
+                    ++_daysSurvived;
+                    // turn into werewolf
+                    if (_isWerewolf == false)
+                    {
+                        _isWerewolf = true;
+                    }
+                    OnTimerFinished?.Invoke(this, EventArgs.Empty);
+                }
+
+                break;
+            case State.GameOver:
+                Time.timeScale = 0f;
+                break;
         }
+    }
+
+    public bool IsGameOver()
+    {
+        return _state == State.GameOver;
     }
 
 
@@ -83,5 +113,10 @@ public class GameManager : MonoBehaviour
     public int GetBonesCollected()
     {
         return _bonesCollected;
+    }
+
+    public int GetTotalDaysSurvived()
+    {
+        return _daysSurvived;
     }
 }

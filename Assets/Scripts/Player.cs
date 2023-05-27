@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _humanPrefab;
     [SerializeField] private GameObject _werewolfPrefab;
 
+    public event EventHandler OnPlayerDead;
 
     private float _turnSmoothTime = 0.1f;
     private float _turnSmoothVelocity;
@@ -184,5 +185,10 @@ public class Player : MonoBehaviour
     public void SetSwordAttack(bool value)
     {
         _isSwordAttacking = value;
+    }
+
+    public void SetPlayerToDead()
+    {
+        OnPlayerDead?.Invoke(this, EventArgs.Empty);
     }
 }

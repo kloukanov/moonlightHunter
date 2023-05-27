@@ -128,7 +128,7 @@ public class EntityAI : MonoBehaviour
                 
                 if(_currentWaitTime >= (Time.time + _entity.GetAttackSpeed()))
                 {
-                    Debug.Log(_entity.name + " is attacking the player");
+                    //Debug.Log(_entity.name + " is attacking the player");
                     _entity.IsWalking = false;
                     _entity.IsSwordAttacking = true;
                     //_entity.DealDamage(Player.Instance.gameObject.GetComponent<Entity>());
